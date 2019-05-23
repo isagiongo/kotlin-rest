@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import com.isagiongo.kotlinbasic.repositories.NoteRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.PathVariable
 
 @RestController
 @RequestMapping("notes")
@@ -19,6 +20,10 @@ class NoteController {
 	@GetMapping
 	fun list(): List<Note>{
 		return noteRepository.findAll().toList()
+	}
+	
+	fun findByTitle(@RequestBody title: String): Note{
+		return noteRepository.findByTitle(title)
 	}
 	
 	@PostMapping
