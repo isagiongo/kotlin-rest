@@ -6,18 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping
 import com.isagiongo.kotlinbasic.models.Note
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import com.isagiongo.kotlinbasic.repositories.NoteRepository
+import org.springframework.beans.factory.annotation.Autowired
 
 @RestController
 @RequestMapping("notes")
 class NoteController {
 	
+	@Autowired
+	lateinit var noteRepository : NoteRepository
+	
 	@GetMapping
 	fun list(): List<Note>{
-		return listOf(Note("Leitura", "Livro de Spring Boot"), Note("Pesquisa","Angular Básico"))
+		return noteRepository.findAll().toList()
 	}
 	
 	@PostMapping
 	fun add(@RequestBody note: Note): Note{
-		return note
+		return noteRepository.save(note)
 	}
 }
