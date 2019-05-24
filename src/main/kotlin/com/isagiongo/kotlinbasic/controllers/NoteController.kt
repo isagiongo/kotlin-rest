@@ -10,6 +10,7 @@ import com.isagiongo.kotlinbasic.repositories.NoteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 
 @RestController
 @RequestMapping("notes")
@@ -21,11 +22,6 @@ class NoteController {
 	@GetMapping
 	fun list(): List<Note>{
 		return noteRepository.findAll().toList()
-	}
-	
-	@GetMapping("/title")
-	fun findByTitle(@RequestBody title: String): Note{
-		return noteRepository.findByTitle(title)
 	}
 	
 	@PostMapping
@@ -40,5 +36,12 @@ class NoteController {
 			return noteRepository.save(safeNote)
 		}
 		return Note()
+	}
+	
+	@DeleteMapping("{id}")
+	fun delete(@PathVariable id: Long){
+		if(noteRepository.existsById(id)){
+			return noteRepository.deleteById(id)
+		}
 	}
 }
