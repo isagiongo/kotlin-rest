@@ -11,37 +11,35 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.DeleteMapping
+import com.isagiongo.kotlinbasic.services.NoteService
 
 @RestController
 @RequestMapping("notes")
-class NoteController {
-	
-	@Autowired
-	lateinit var noteRepository : NoteRepository
+class NoteController (private val noteService : NoteService) {
 	
 	@GetMapping
 	fun list(): List<Note>{
-		return noteRepository.findAll().toList()
+		return noteService.findAll().toList()
 	}
 	
 	@PostMapping
 	fun add(@RequestBody note: Note): Note{
-		return noteRepository.save(note)
+		return noteService.save(note)
 	}
 	
 	@PutMapping("{id}")
 	fun update(@PathVariable id: Long, @RequestBody note: Note): Note {
-		if(noteRepository.existsById(id)){
+		if(noteService.existsById(id)){
 			val safeNote = note.copy(id)
-			return noteRepository.save(safeNote)
+			return noteService.save(safeNote)
 		}
 		return Note()
 	}
 	
 	@DeleteMapping("{id}")
 	fun delete(@PathVariable id: Long){
-		if(noteRepository.existsById(id)){
-			return noteRepository.deleteById(id)
+		if(noteService.existsById(id)){
+			return noteService.deleteById(id)
 		}
 	}
 }
