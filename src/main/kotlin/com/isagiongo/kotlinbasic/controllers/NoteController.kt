@@ -12,34 +12,39 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.DeleteMapping
 import com.isagiongo.kotlinbasic.services.NoteService
+import org.springframework.http.ResponseEntity
 
 @RestController
 @RequestMapping("notes")
 class NoteController (private val noteService : NoteService) {
 	
 	@GetMapping
-	fun list(): List<Note>{
-		return noteService.findAll().toList()
+	fun list(): ResponseEntity<List<Note>>{
+		val allNotes = noteService.findAll().toList()
+		return ResponseEntity.ok(allNotes)
 	}
 	
 	@PostMapping
-	fun add(@RequestBody note: Note): Note{
-		return noteService.save(note)
+	fun add(@RequestBody note: Note): ResponseEntity<Note>{
+		val savedNote = noteService.save(note)
+		return ResponseEntity.ok(savedNote)
 	}
 	
 	@PutMapping("{id}")
-	fun update(@PathVariable id: Long, @RequestBody note: Note): Note {
+	fun update(@PathVariable id: Long, @RequestBody note: Note): ResponseEntity<Note> {
 		if(noteService.existsById(id)){
-			val safeNote = note.copy(id)
-			return noteService.save(safeNote)
+			val alteredNote = noteService.update(id, note)
+			return ResponseEntity.ok(alteredNote)
 		}
-		return Note()
+		return ResponseEntity.notFound().build()
 	}
 	
 	@DeleteMapping("{id}")
-	fun delete(@PathVariable id: Long){
+	fun delete(@PathVariable id: Long) : ResponseEntity<Unit>{
 		if(noteService.existsById(id)){
-			return noteService.deleteById(id)
+			noteService.deleteById(id)
+			return ResponseEntity.ok().build()
 		}
+		return ResponseEntity.notFound().build()
 	}
 }
